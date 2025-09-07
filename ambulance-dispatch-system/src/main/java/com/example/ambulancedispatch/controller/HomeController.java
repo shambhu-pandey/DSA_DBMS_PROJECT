@@ -41,7 +41,7 @@ public class HomeController implements CommandLineRunner {
 
     private void seedAmbulance(String ambulanceId, String hospitalId, String location,
                                String pincode, String driverName, String driverPhone) {
-        if (ambulanceRepo.findByAmbulanceId(ambulanceId).isEmpty()) {
+        if (ambulanceRepo.findByAmbulanceId(ambulanceId).isEmpty()) { 
             Ambulance ambulance = new Ambulance(ambulanceId, hospitalId, location, "AVAILABLE");
             ambulance.setPincode(pincode);
             ambulance.setDriverName(driverName);
@@ -49,6 +49,8 @@ public class HomeController implements CommandLineRunner {
             ambulanceRepo.save(ambulance);
         }
     }
+
+ 
 
     // -------------------- INITIAL DATA --------------------
     @Override
@@ -123,5 +125,4 @@ public class HomeController implements CommandLineRunner {
         return dispatcherService.updateAmbulanceStatus(ambulanceId, status);
     }
 }
-
 

@@ -7,6 +7,7 @@ com\example\ambulancedispatch\service\HospitalService.class
 com\example\ambulancedispatch\service\Dijkstra$Result.class
 com\example\ambulancedispatch\controller\HomeController.class
 com\example\ambulancedispatch\controller\EmergencyController.class
+com\example\ambulancedispatch\service\AmbulanceService.class
 com\example\ambulancedispatch\service\MinHeapPriorityQueue.class
 com\example\ambulancedispatch\service\MinHeapPriorityQueue$AmbulanceDistance.class
 com\example\ambulancedispatch\AmbulanceDispatchApplication.class
