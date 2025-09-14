@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Ambulance Dispatch System</title>
@@ -7,121 +8,25 @@
             margin: 0;
             background: #f4f8fb;
         }
-        h1 {
-            text-align: center;
-            color: #007bff;
-            margin-top: 32px;
-            font-size: 2.5em;
-            letter-spacing: 2px;
-        }
-        .section {
-            margin: 32px auto;
-            padding: 32px 40px;
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            max-width: 900px;
-        }
-        .section h2 {
-            color: #007bff;
-            margin-bottom: 22px;
-            font-size: 1.5em;
-            letter-spacing: 1px;
-        }
+        h1 { text-align: center; color: #007bff; margin-top: 32px; font-size: 2.5em; letter-spacing: 2px; }
+        .section { margin: 32px auto; padding: 32px 40px; background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); max-width: 900px; }
+        .section h2 { color: #007bff; margin-bottom: 22px; font-size: 1.5em; letter-spacing: 1px; }
         .form-group { margin: 18px 0; }
         label { display: block; font-weight: 500; color: #444; margin-bottom: 6px; }
-        input, select {
-            padding: 10px;
-            width: 100%;
-            border: 1px solid #bbb;
-            border-radius: 6px;
-            font-size: 1em;
-            margin-bottom: 8px;
-            background: #f7fbff;
-            transition: border 0.2s;
-        }
+        input, select { padding: 10px; width: 100%; border: 1px solid #bbb; border-radius: 6px; font-size: 1em; margin-bottom: 8px; background: #f7fbff; transition: border 0.2s; }
         input:focus, select:focus { border: 1.5px solid #007bff; outline: none; }
-        button {
-            padding: 12px 28px;
-            background: linear-gradient(90deg,#007bff,#00c6ff);
-            color: white;
-            border: none;
-            border-radius: 7px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1.08em;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-            transition: background 0.2s, box-shadow 0.2s;
-        }
-        button:hover {
-            background: linear-gradient(90deg,#0056b3,#007bff);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-        }
-        .result {
-            margin: 18px 0;
-            padding: 16px;
-            background: #eaf6ff;
-            border-radius: 8px;
-            border-left: 6px solid #007bff;
-            font-size: 1.12em;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 18px;
-            background: #fff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        th {
-            background: #007bff;
-            color: #fff;
-            font-weight: 600;
-            padding: 14px;
-            font-size: 1.08em;
-            border-right: 1px solid #e0e0e0;
-        }
-        td {
-            padding: 13px;
-            text-align: left;
-            font-size: 1.05em;
-            vertical-align: top;
-            border-right: 1px solid #f0f0f0;
-            border-bottom: 1px solid #f0f0f0;
-        }
+        button { padding: 12px 28px; background: linear-gradient(90deg,#007bff,#00c6ff); color: white; border: none; border-radius: 7px; cursor: pointer; font-weight: 600; font-size: 1.08em; box-shadow: 0 2px 8px rgba(0,0,0,0.07); transition: background 0.2s, box-shadow 0.2s; }
+        button:hover { background: linear-gradient(90deg,#0056b3,#007bff); box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+        .result { margin: 18px 0; padding: 16px; background: #eaf6ff; border-radius: 8px; border-left: 6px solid #007bff; font-size: 1.12em; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: none; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 18px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        th { background: #007bff; color: #fff; font-weight: 600; padding: 14px; font-size: 1.08em; border-right: 1px solid #e0e0e0; }
+        td { padding: 13px; text-align: left; font-size: 1.05em; vertical-align: top; border-right: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; }
         tbody tr:nth-child(even) { background: #f7fbff; }
         tbody tr:hover { background: #e3f2fd; }
-        .refresh-btn {
-            float: right;
-            margin-bottom: 8px;
-            background: #fff;
-            color: #007bff;
-            border: 2px solid #007bff;
-            border-radius: 6px;
-            font-weight: 600;
-            padding: 7px 18px;
-            transition: background 0.2s, color 0.2s;
-        }
-        .refresh-btn:hover {
-            background: #007bff;
-            color: #fff;
-        }
-        /* Dispatch History Why column styling */
-        #historyTable td.why {
-            max-width: 350px;
-            word-break: break-word;
-            color: #ff9800;
-            font-size: 1em;
-            background: #fffbe6;
-            border-left: 4px solid #ff9800;
-        }
-        #historyTable th.why {
-            background: #ff9800;
-            color: #fff;
-        }
+        .refresh-btn { float: right; margin-bottom: 8px; background: #fff; color: #007bff; border: 2px solid #007bff; border-radius: 6px; font-weight: 600; padding: 7px 18px; transition: background 0.2s, color 0.2s; }
+        .refresh-btn:hover { background: #007bff; color: #fff; }
+        #historyTable td.why { max-width: 350px; word-break: break-word; color: #ff9800; font-size: 1em; background: #fffbe6; border-left: 4px solid #ff9800; }
+        #historyTable th.why { background: #ff9800; color: #fff; }
         @media (max-width: 900px) {
             .section { max-width: 98vw; padding: 16px; }
             input, select { width: 100%; }
@@ -154,7 +59,7 @@
             </div>
             <button type="submit">Register Hospital</button>
         </form>
-        <div id="hospitalResult" class="result" style="display: none;"></div>
+        <div id="hospitalResult" class="result"></div>
     </div>
 
     <!-- Ambulance Registration -->
@@ -187,7 +92,7 @@
             </div>
             <button type="submit">Register Ambulance</button>
         </form>
-        <div id="ambulanceResult" class="result" style="display: none;"></div>
+        <div id="ambulanceResult" class="result"></div>
     </div>
 
     <!-- Emergency Request -->
@@ -221,7 +126,7 @@
             </div>
             <button type="submit">Create Emergency Request</button>
         </form>
-        <div id="emergencyResult" class="result" style="display: none;"></div>
+        <div id="emergencyResult" class="result"></div>
     </div>
 
     <!-- Update Ambulance Status -->
@@ -238,10 +143,10 @@
             </select>
             <button type="submit">Update</button>
         </form>
-        <div id="updateResult" class="result" style="display: none;"></div>
+        <div id="updateResult" class="result"></div>
     </div>
 
-    <!-- Live Ambulance Table -->
+    <!-- Ambulance List -->
     <div class="section">
         <h2>📊 Ambulance List</h2>
         <button class="refresh-btn" onclick="loadAmbulances()">🔄 Refresh</button>
@@ -290,225 +195,178 @@
                     <th>Hospital</th>
                     <th>Outcome</th>
                     <th>Time</th>
-                  
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
 
-    <script>
-        // Hospital Registration
-        document.getElementById('hospitalForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const hospital = {
-                name: hospitalName.value,
-                location: hospitalLocation.value,
-                pincode: hospitalPincode.value,
-                availableBeds: parseInt(availableBeds.value)
-            };
-            fetch('/api/hospital/add', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(hospital)
-            })
-            .then(res => res.json())
-            .then(() => {
-                hospitalResult.style.display = 'block';
-                hospitalResult.innerHTML = '✅ Hospital registered successfully!';
-                this.reset();
-                loadHospitals();
-            });
-        });
+<script>
+const hospitalResult = document.getElementById('hospitalResult');
+const ambulanceResult = document.getElementById('ambulanceResult');
+const emergencyResult = document.getElementById('emergencyResult');
+const updateResult = document.getElementById('updateResult');
 
-        // Ambulance Registration
-        document.getElementById('ambulanceForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const ambulance = {
-                ambulanceId: ambulanceId.value,
-                hospitalId: ambulanceHospital.value,
-                location: ambulanceLocation.value,
-                pincode: ambulancePincode.value,
-                driverName: driverName.value,
-                driverPhone: driverPhone.value,
-                status: 'AVAILABLE'
-            };
-            fetch('/api/ambulance/add', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(ambulance)
-            })
-            .then(res => res.json())
-            .then(() => {
-                ambulanceResult.style.display = 'block';
-                ambulanceResult.innerHTML = '✅ Ambulance registered successfully!';
-                this.reset();
-                loadAmbulances();
-            });
-        });
-
-  
-    // Emergency Request
-    document.getElementById('emergencyForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const pincode = parseInt(patientPincode.value);
-        // Chennai pincode range: 600001 to 600130
-        if (isNaN(pincode) || pincode < 600001 || pincode > 600130) {
-            emergencyResult.style.display = 'block';
-            emergencyResult.innerHTML = `
-                <span style="color:#d32f2f;font-size:1.15em;">
-                    ❌ Sorry, our service is not available for pincode <b>${patientPincode.value}</b>.<br>
-                    <span style="color:#007bff;">We only serve Chennai (Pincode: 600001 to 600130).</span>
-                </span>
-            `;
-            return;
-        }
-
-        const request = {
-            patientName: patientName.value,
-            contactNo: contactNo.value,
-            emergencyType: emergencyType.value,
-            patientLocation: patientLocation.value,
-            pincode: patientPincode.value
-        };
-
-        fetch('/api/emergency/new', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(request)
-        })
-        .then(res => res.json())
-        .then(data => {
-            emergencyResult.style.display = 'block';
-
-            if (data.status === 'ASSIGNED') {
-                emergencyResult.innerHTML = `
-                    <div style="font-size:1.1em;">
-                    <span style="font-size:1.3em;">🚨 Emergency Request Created!</span><br>
-                    <span>Status: <b style="color:#007bff">${data.status}</b></span><br><br>
-                    <span style="color:#28a745;">✅ Assignment Details:</span><br>
-                    <b>Patient Pincode:</b> ${data.pincode}<br>
-                    🚐 <b>Ambulance:</b> ${data.assignedAmbulance.ambulanceId}<br>
-                    👨‍✈️ <b>Driver:</b> ${data.assignedAmbulance.driverName} <span style="color:#007bff;">(📞 ${data.assignedAmbulance.driverPhone})</span><br>
-                    <b>Ambulance Pincode:</b> ${data.assignedAmbulance.pincode}<br>
-                    🏥 <b>Hospital:</b> ${data.assignedHospital.name} <span style="color:#007bff;">(Beds Left: ${data.assignedHospital.availableBeds})</span><br>
-                    <b>Hospital Pincode:</b> ${data.assignedHospital.pincode}<br>
-                    <span style="color:#ff9800;">📌 Why:</span> Nearest ambulance to patient pincode, and hospital has available beds.
-                    </div>
-                `;
-            } else if (data.status === 'WAITING') {
-                emergencyResult.innerHTML = `
-                    <span style="font-size:1.2em;">🚨 Emergency Request Created!</span><br>
-                    Status: <b>${data.status}</b><br>
-                    <span style="color:#ff9800;">📌 Reason: No ambulance available right now. Your request is in the waiting queue. or You can try after sometime </span>
-                `;
-            } else if (data.status === 'OUT_OF_COVERAGE') {
-                emergencyResult.innerHTML = `
-                    <span style="font-size:1.2em;">🚨 Emergency Request Created!</span><br>
-                    Status: <b>${data.status}</b><br>
-                    <span style="color:#ff9800;">📌 Reason: Patient pincode ${data.pincode} is out of our service coverage.</span>
-                `;
-            } else if (data.status === 'NO_HOSPITAL_AVAILABLE') {
-                emergencyResult.innerHTML = `
-                    <span style="font-size:1.2em;">🚨 Emergency Request Created!</span><br>
-                    Status: <b>${data.status}</b><br>
-                    <span style="color:#ff9800;">📌 Reason: No hospital with available beds nearby.</span>
-                `;
-            }
-
-            this.reset();
-        });
-    });
-
- 
-
-        // Update Ambulance Status
-        document.getElementById("updateAmbulanceForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-            const ambulanceId = document.getElementById("updateAmbulanceId").value;
-            const status = document.getElementById("ambulanceStatus").value;
-            fetch(`/api/ambulance/update-status?ambulanceId=${ambulanceId}&status=${status}`, { method: "POST" })
-            .then(res => res.text())
-            .then(msg => {
-                updateResult.style.display = 'block';
-                updateResult.innerText = msg;
-                loadAmbulances();
-            });
-        });
-
-        // Load Ambulances
-        function loadAmbulances() {
-            fetch('/api/ambulance/all')
-            .then(res => res.json())
-            .then(data => {
-                const tbody = document.querySelector("#ambulanceTable tbody");
-                tbody.innerHTML = "";
-                data.forEach(a => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><b>${a.ambulanceId}</b></td>
-                            <td>${a.hospitalId}</td>
-                            <td>${a.location}</td>
-                            <td>${a.pincode}</td>
-                            <td>${a.driverName}</td>
-                            <td><span style="color:${a.status==='AVAILABLE'?'#28a745':'#d32f2f'}">${a.status}</span></td>
-                        </tr>`;
-                });
-            });
-        }
-
-        // Load Hospitals
-        function loadHospitals() {
-            fetch('/api/hospital/all')
-            .then(res => res.json())
-            .then(data => {
-                const tbody = document.querySelector("#hospitalTable tbody");
-                tbody.innerHTML = "";
-                data.forEach(h => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><b>${h.name}</b></td>
-                            <td>${h.location}</td>
-                            <td>${h.pincode}</td>
-                            <td><span style="color:#007bff;">${h.availableBeds}</span></td>
-                        </tr>`;
-                });
-            });
-        }
-
-        // Load Dispatch History
-        function loadDispatchHistory() {
-            fetch('/api/dispatch/history')
-            .then(res => res.json())
-            .then(data => {
-                const tbody = document.querySelector("#historyTable tbody");
-                tbody.innerHTML = "";
-                data.forEach(d => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${d.requestId}</td>
-                            <td>${d.patientName} (${d.patientPincode})</td>
-                            <td>
-                                <b>${d.ambulanceId}</b><br>
-                                <span style="color:#007bff;">${d.driverName || 'N/A'}</span>
-                            </td>
-                            <td>
-                                <b>${d.hospitalName || d.hospitalId}</b>
-                            </td>
-                            <td>${d.outcome}</td>
-                            <td>${d.dispatchTime}</td>
-                            
-                        </tr>`;
-                });
-            });
-        }
-
-        // Auto-load
-        loadAmbulances();
+// Hospital Registration
+document.getElementById('hospitalForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const hospital = {
+        name: hospitalName.value,
+        location: hospitalLocation.value,
+        pincode: hospitalPincode.value,
+        availableBeds: parseInt(availableBeds.value)
+    };
+    fetch('/api/hospital/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(hospital)
+    })
+    .then(res => res.json())
+    .then(() => {
+        hospitalResult.style.display = 'block';
+        hospitalResult.innerHTML = '✅ Hospital registered successfully!';
+        this.reset();
         loadHospitals();
+    }).catch(err => console.error(err));
+});
+
+// Ambulance Registration
+document.getElementById('ambulanceForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const ambulance = {
+        ambulanceId: ambulanceId.value,
+        hospitalId: ambulanceHospital.value,
+        location: ambulanceLocation.value,
+        pincode: ambulancePincode.value,
+        driverName: driverName.value,
+        driverPhone: driverPhone.value,
+        status: 'AVAILABLE'
+    };
+    fetch('/api/ambulance/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(ambulance)
+    })
+    .then(res => res.json())
+    .then(() => {
+        ambulanceResult.style.display = 'block';
+        ambulanceResult.innerHTML = '✅ Ambulance registered successfully!';
+        this.reset();
+        loadAmbulances();
+    }).catch(err => console.error(err));
+});
+
+// Emergency Request
+document.getElementById('emergencyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const request = {
+        patientName: patientName.value,
+        contactNo: contactNo.value,
+        emergencyType: emergencyType.value,
+        patientLocation: patientLocation.value,
+        pincode: patientPincode.value
+    };
+    fetch('/api/emergency/new', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request)
+    })
+    .then(res => res.json())
+    .then(data => {
+        emergencyResult.style.display = 'block';
+        if (data.status === 'ASSIGNED') {
+            emergencyResult.innerHTML = `
+                🚨 Assigned to Ambulance ${data.assignedAmbulance.ambulanceId} (Driver: ${data.assignedAmbulance.driverName})
+                <br>Hospital: ${data.assignedHospital.name} (Beds Left: ${data.assignedHospital.availableBeds})
+            `;
+        } else {
+            emergencyResult.innerHTML = `Status: ${data.status}`;
+        }
+        this.reset();
+        loadAmbulances();
         loadDispatchHistory();
-    </script>
+    }).catch(err => console.error(err));
+});
+
+// Update Ambulance Status
+document.getElementById("updateAmbulanceForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const ambulanceId = document.getElementById("updateAmbulanceId").value;
+    const status = document.getElementById("ambulanceStatus").value;
+    fetch(`/api/ambulance/update-status?ambulanceId=${ambulanceId}&status=${status}`, { method: "POST" })
+    .then(res => res.text())
+    .then(msg => {
+        updateResult.style.display = 'block';
+        updateResult.innerText = msg;
+        loadAmbulances();
+    }).catch(err => console.error(err));
+});
+
+// Load Ambulances
+function loadAmbulances() {
+    fetch('/api/ambulance/all')
+    .then(res => res.json())
+    .then(data => {
+        const tbody = document.querySelector("#ambulanceTable tbody");
+        tbody.innerHTML = "";
+        data.forEach(a => {
+            tbody.innerHTML += `
+                <tr>
+                    <td><b>${a.ambulanceId}</b></td>
+                    <td>${a.hospitalId}</td>
+                    <td>${a.location}</td>
+                    <td>${a.pincode}</td>
+                    <td>${a.driverName}</td>
+                    <td><span style="color:${a.status==='AVAILABLE'?'#28a745':'#d32f2f'}">${a.status}</span></td>
+                </tr>`;
+        });
+    }).catch(err => console.error(err));
+}
+
+// Load Hospitals
+function loadHospitals() {
+    fetch('/api/hospital/all')
+    .then(res => res.json())
+    .then(data => {
+        const tbody = document.querySelector("#hospitalTable tbody");
+        tbody.innerHTML = "";
+        data.forEach(h => {
+            tbody.innerHTML += `
+                <tr>
+                    <td><b>${h.name}</b></td>
+                    <td>${h.location}</td>
+                    <td>${h.pincode}</td>
+                    <td><span style="color:#007bff;">${h.availableBeds}</span></td>
+                </tr>`;
+        });
+    }).catch(err => console.error(err));
+}
+
+// Load Dispatch History
+function loadDispatchHistory() {
+    fetch('/api/dispatch/history')
+    .then(res => res.json())
+    .then(data => {
+        const tbody = document.querySelector("#historyTable tbody");
+        tbody.innerHTML = "";
+        data.forEach(d => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${d.requestId}</td>
+                    <td>${d.patientName} (${d.patientPincode})</td>
+                    <td><b>${d.ambulanceId}</b><br><span style="color:#007bff;">${d.driverName || 'N/A'}</span></td>
+                    <td><b>${d.hospitalName || d.hospitalId}</b></td>
+                    <td>${d.outcome}</td>
+                    <td>${d.dispatchTime}</td>
+                </tr>`;
+        });
+    }).catch(err => console.error(err));
+}
+
+// Auto-load on page load
+loadAmbulances();
+loadHospitals();
+loadDispatchHistory();
+</script>
 </body>
 </html>
-
-
