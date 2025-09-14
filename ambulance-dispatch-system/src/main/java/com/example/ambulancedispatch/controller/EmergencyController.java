@@ -36,3 +36,4 @@ public class EmergencyController {
         return repo.findAll();
     }
 }
+

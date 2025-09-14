@@ -1,3 +1,9 @@
+
+
+
+
+
+
 package com.example.ambulancedispatch.service;
 
 import com.example.ambulancedispatch.model.*;
@@ -22,34 +28,30 @@ public class DispatcherService {
     @Autowired
     private DispatchHistoryRepository dispatchHistoryRepository;
 
-    // ✅ Priority Queue for waiting requests
-    private PriorityQueue<EmergencyRequest> waitingQueue =
+    private final PriorityQueue<EmergencyRequest> waitingQueue =
             new PriorityQueue<>(Comparator.comparingInt(this::getPriority));
 
-    // Emergency type priority mapping
     private int getPriority(EmergencyRequest req) {
+        if (req.getEmergencyType() == null) return 4;
         switch (req.getEmergencyType().toUpperCase()) {
-            case "CRITICAL": return 1; // Highest priority
+            case "CRITICAL": return 1;
             case "MAJOR": return 2;
             case "MINOR": return 3;
             default: return 4;
         }
     }
 
-    // ✅ Pincode-based distance calculation
     private int calculatePincodeDistance(String patientPincode, String ambulancePincode) {
         try {
             int patient = Integer.parseInt(patientPincode.trim());
             int ambulance = Integer.parseInt(ambulancePincode.trim());
-            return Math.abs(patient - ambulance) * 2; // ~2km per unit difference
+            return Math.abs(patient - ambulance) * 2;
         } catch (Exception e) {
-            return 50; // fallback
+            return 50;
         }
     }
 
-    // ✅ Dispatch method with Chennai restriction & Waiting Queue
     public EmergencyRequest dispatchEmergencyWithPincode(EmergencyRequest request) {
-        // Restrict to Chennai pincodes (600xxx)
         if (!request.getPincode().startsWith("600")) {
             request.setStatus("OUT_OF_COVERAGE");
             emergencyRequestRepository.save(request);
@@ -59,7 +61,6 @@ public class DispatcherService {
         List<Ambulance> ambulances = ambulanceRepository.findAll();
         List<Hospital> hospitals = hospitalRepository.findAll();
 
-        // filter only available ambulances
         List<Ambulance> candidates = new ArrayList<>();
         for (Ambulance amb : ambulances) {
             if ("AVAILABLE".equalsIgnoreCase(amb.getStatus())) {
@@ -67,7 +68,6 @@ public class DispatcherService {
             }
         }
 
-        // ✅ If no ambulances free → Add to waiting queue
         if (candidates.isEmpty()) {
             request.setStatus("WAITING");
             emergencyRequestRepository.save(request);
@@ -75,7 +75,6 @@ public class DispatcherService {
             return request;
         }
 
-        // find nearest ambulance
         Ambulance nearestAmbulance = null;
         int minDist = Integer.MAX_VALUE;
         for (Ambulance amb : candidates) {
@@ -86,7 +85,6 @@ public class DispatcherService {
             }
         }
 
-        // find nearest hospital with available beds
         Hospital nearestHospital = null;
         int minHospitalDist = Integer.MAX_VALUE;
         for (Hospital h : hospitals) {
@@ -105,23 +103,25 @@ public class DispatcherService {
             return request;
         }
 
-        // ✅ Assign ambulance + hospital
+        // ✅ Assign ambulance & hospital
         request.setStatus("ASSIGNED");
         request.setAssignedAmbulance(nearestAmbulance);
         request.setAssignedHospital(nearestHospital);
         emergencyRequestRepository.save(request);
 
-        // update ambulance & hospital
         nearestAmbulance.setStatus("BUSY");
         ambulanceRepository.save(nearestAmbulance);
+
         nearestHospital.setAvailableBeds(nearestHospital.getAvailableBeds() - 1);
         hospitalRepository.save(nearestHospital);
 
-        // log history (use ambulanceId instead of Mongo _id)
+        // ✅ Save Dispatch History with explanation
         DispatchHistory history = new DispatchHistory();
         history.setRequestId(request.getId());
-        history.setAmbulanceId(nearestAmbulance.getAmbulanceId()); // ✅ FIXED
+        history.setAmbulanceId(nearestAmbulance.getAmbulanceId());
         history.setHospitalId(nearestHospital.getId());
+        history.setHospitalName(nearestHospital.getName());
+        history.setHospitalPincode(nearestHospital.getPincode());
         history.setPatientName(request.getPatientName());
         history.setPatientLocation(request.getPatientLocation());
         history.setPatientPincode(request.getPincode());
@@ -130,38 +130,42 @@ public class DispatcherService {
         history.setDriverName(nearestAmbulance.getDriverName());
         history.setDriverPhone(nearestAmbulance.getDriverPhone());
         history.setOutcome("ASSIGNED");
+        history.setExplanation("Ambulance " + nearestAmbulance.getAmbulanceId() +
+                " (Driver: " + nearestAmbulance.getDriverName() + ", Phone: " + nearestAmbulance.getDriverPhone() + ")" +
+                " was chosen as it is nearest to patient pincode " + request.getPincode() +
+                ". Hospital " + nearestHospital.getName() + " selected since it has available beds and nearest distance.");
         dispatchHistoryRepository.save(history);
 
         return request;
     }
 
-    // ✅ Update ambulance status
     public String updateAmbulanceStatus(String ambulanceId, String status) {
-        return ambulanceRepository.findByAmbulanceId(ambulanceId)
-                .map(amb -> {
-                    amb.setStatus(status.toUpperCase());
-                    ambulanceRepository.save(amb);
+        String cleanId = ambulanceId.trim().toUpperCase();
 
-                    // if set to AVAILABLE, assign from queue
-                    if ("AVAILABLE".equalsIgnoreCase(status)) {
-                        assignFromQueue(amb);
-                    }
+        Optional<Ambulance> optionalAmb = ambulanceRepository.findByAmbulanceId(cleanId);
+        if (optionalAmb.isPresent()) {
+            Ambulance amb = optionalAmb.get();
+            amb.setStatus(status.toUpperCase());
+            ambulanceRepository.save(amb);
 
-                    return "✅ Ambulance " + ambulanceId + " status updated to " + status;
-                })
-                .orElse("❌ Ambulance not found with ID: " + ambulanceId);
+            if ("AVAILABLE".equalsIgnoreCase(status)) {
+                assignFromQueue(amb);
+            }
+
+            return "✅ Ambulance " + cleanId + " status updated to " + status.toUpperCase();
+        } else {
+            return "❌ Ambulance not found with ID: " + cleanId;
+        }
     }
 
-    // ✅ Assign highest-priority waiting request
-    public void assignFromQueue(Ambulance freedAmbulance) {
+    private void assignFromQueue(Ambulance freedAmbulance) {
         if (waitingQueue.isEmpty()) return;
 
-        EmergencyRequest nextRequest = waitingQueue.poll(); // get highest priority
+        EmergencyRequest nextRequest = waitingQueue.poll();
         if (nextRequest != null) {
             nextRequest.setStatus("ASSIGNED");
             nextRequest.setAssignedAmbulance(freedAmbulance);
 
-            // assign nearest hospital again
             Hospital nearestHospital = null;
             int minDist = Integer.MAX_VALUE;
             for (Hospital h : hospitalRepository.findAll()) {
@@ -184,17 +188,6 @@ public class DispatcherService {
             emergencyRequestRepository.save(nextRequest);
         }
     }
-
-    // ✅ Route explanation (Ambulance → Patient → Hospital)
-    public List<String> getRoute(String ambulanceLoc, String patientLoc, String hospitalLoc) {
-        List<String> route = new ArrayList<>();
-        route.add("Ambulance at " + ambulanceLoc);
-        route.add("Picking patient at " + patientLoc);
-        route.add("Heading to hospital at " + hospitalLoc);
-        route.add("This route is chosen because it is shortest in terms of pincode distance.");
-        return route;
-    }
 }
-
 
 

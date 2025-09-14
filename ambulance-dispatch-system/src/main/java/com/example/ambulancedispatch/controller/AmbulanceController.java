@@ -40,3 +40,6 @@ public class AmbulanceController {
         return dispatcherService.updateAmbulanceStatus(ambulanceId, status);
     }
 }
+
+
+

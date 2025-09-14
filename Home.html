@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Ambulance Dispatch System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .form-group {
+            margin: 10px 0;
+        }
+        
+        label {
+            display: inline-block;
+            width: 150px;
+        }
+        
+        input,
+        select {
+            padding: 5px;
+            width: 200px;
+        }
+        
+        button {
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 3px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        table,
+        th,
+        td {
+            border: 1px solid #ccc;
+        }
+        
+        th,
+        td {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🚑 Ambulance Dispatch System</h1>
+
+    <!-- Hospital Registration -->
+    <div class="section">
+        <h2>🏥 Register Hospital</h2>
+        <form id="hospitalForm">
+            <div class="form-group">
+                <label for="hospitalName">Hospital Name:</label>
+                <input type="text" id="hospitalName" required>
+            </div>
+            <div class="form-group">
+                <label for="hospitalLocation">Location:</label>
+                <input type="text" id="hospitalLocation" required>
+            </div>
+            <div class="form-group">
+                <label for="hospitalPincode">Pincode:</label>
+                <input type="text" id="hospitalPincode" required>
+            </div>
+            <div class="form-group">
+                <label for="availableBeds">Available Beds:</label>
+                <input type="number" id="availableBeds" required>
+            </div>
+            <button type="submit">Register Hospital</button>
+        </form>
+        <div id="hospitalResult" class="result" style="display: none;"></div>
+    </div>
+
+    <!-- Ambulance Registration -->
+    <div class="section">
+        <h2>🚐 Register Ambulance</h2>
+        <form id="ambulanceForm">
+            <div class="form-group">
+                <label for="ambulanceId">Ambulance ID:</label>
+                <input type="text" id="ambulanceId" required>
+            </div>
+            <div class="form-group">
+                <label for="ambulanceHospital">Hospital ID:</label>
+                <input type="text" id="ambulanceHospital" required>
+            </div>
+            <div class="form-group">
+                <label for="ambulanceLocation">Location:</label>
+                <input type="text" id="ambulanceLocation" required>
+            </div>
+            <div class="form-group">
+                <label for="ambulancePincode">Pincode:</label>
+                <input type="text" id="ambulancePincode" required>
+            </div>
+            <div class="form-group">
+                <label for="driverName">Driver Name:</label>
+                <input type="text" id="driverName" required>
+            </div>
+            <div class="form-group">
+                <label for="driverPhone">Driver Phone:</label>
+                <input type="text" id="driverPhone" required>
+            </div>
+            <button type="submit">Register Ambulance</button>
+        </form>
+        <div id="ambulanceResult" class="result" style="display: none;"></div>
+    </div>
+
+    <!-- Emergency Request -->
+    <div class="section">
+        <h2>🚨 New Emergency Request</h2>
+        <form id="emergencyForm">
+            <div class="form-group">
+                <label for="patientName">Patient Name:</label>
+                <input type="text" id="patientName" required>
+            </div>
+            <div class="form-group">
+                <label for="contactNo">Contact Number:</label>
+                <input type="text" id="contactNo" required>
+            </div>
+            <div class="form-group">
+                <label for="emergencyType">Emergency Type:</label>
+                <select id="emergencyType" required>
+                    <option value="CRITICAL">Critical</option>
+                    <option value="MAJOR">Major</option>
+                    <option value="MINOR">Minor</option>
+                    <option value="OTHER">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="patientLocation">Patient Location:</label>
+                <input type="text" id="patientLocation" required>
+            </div>
+            <div class="form-group">
+                <label for="patientPincode">Patient Pincode:</label>
+                <input type="text" id="patientPincode" required>
+            </div>
+            <button type="submit">Create Emergency Request</button>
+        </form>
+        <div id="emergencyResult" class="result" style="display: none;"></div>
+    </div>
+
+    <!-- Update Ambulance Status -->
+    <div class="section">
+        <h2>🚐 Update Ambulance Status</h2>
+        <form id="updateAmbulanceForm">
+            <label for="updateAmbulanceId">Ambulance ID:</label>
+            <input type="text" id="updateAmbulanceId" required>
+            <label for="ambulanceStatus">Status:</label>
+            <select id="ambulanceStatus">
+                <option value="AVAILABLE">AVAILABLE</option>
+                <option value="BUSY">BUSY</option>
+                <option value="OFFLINE">OFFLINE</option>
+            </select>
+            <button type="submit">Update</button>
+        </form>
+        <div id="updateResult" class="result" style="display: none;"></div>
+    </div>
+
+    <!-- Live Ambulance Table -->
+    <div class="section">
+        <h2>📊 Ambulance List</h2>
+        <button onclick="loadAmbulances()">Refresh</button>
+        <table id="ambulanceTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Hospital ID</th>
+                    <th>Location</th>
+                    <th>Pincode</th>
+                    <th>Driver</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Hospital List -->
+    <div class="section">
+        <h2>🏥 Hospital List</h2>
+        <button onclick="loadHospitals()">Refresh</button>
+        <table id="hospitalTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Pincode</th>
+                    <th>Available Beds</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Dispatch History -->
+    <div class="section">
+        <h2>📜 Dispatch History</h2>
+        <button onclick="loadDispatchHistory()">Refresh</button>
+        <table id="historyTable">
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>Patient</th>
+                    <th>Ambulance</th>
+                    <th>Hospital</th>
+                    <th>Outcome</th>
+                    <th>Time</th>
+                    <th>Why?</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        // Hospital Registration
+        document.getElementById('hospitalForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const hospital = {
+                name: hospitalName.value,
+                location: hospitalLocation.value,
+                pincode: hospitalPincode.value,
+                availableBeds: parseInt(availableBeds.value)
+            };
+            fetch('/api/hospital/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(hospital)
+                })
+                .then(res => res.json())
+                .then(() => {
+                    hospitalResult.style.display = 'block';
+                    hospitalResult.innerHTML = '✅ Hospital registered successfully!';
+                    this.reset();
+                    loadHospitals();
+                });
+        });
+
+        // Ambulance Registration
+        document.getElementById('ambulanceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const ambulance = {
+                ambulanceId: ambulanceId.value,
+                hospitalId: ambulanceHospital.value,
+                location: ambulanceLocation.value,
+                pincode: ambulancePincode.value,
+                driverName: driverName.value,
+                driverPhone: driverPhone.value,
+                status: 'AVAILABLE'
+            };
+            fetch('/api/ambulance/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(ambulance)
+                })
+                .then(res => res.json())
+                .then(() => {
+                    ambulanceResult.style.display = 'block';
+                    ambulanceResult.innerHTML = '✅ Ambulance registered successfully!';
+                    this.reset();
+                    loadAmbulances();
+                });
+        });
+
+        // Emergency Request
+
+        // Update Ambulance Status
+        document.getElementById("updateAmbulanceForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const ambulanceId = document.getElementById("updateAmbulanceId").value;
+            const status = document.getElementById("ambulanceStatus").value;
+            fetch(/api/ambulance / update - status ? ambulanceId = $ {
+                    ambulanceId
+                } & status = $ {
+                    status
+                }, {
+                    method: "POST"
+                })
+                .then(res => res.text())
+                .then(msg => {
+                    updateResult.style.display = 'block';
+                    updateResult.innerText = msg;
+                    loadAmbulances();
+                });
+        });
+
+        // Load Ambulances
+        function loadAmbulances() {
+            fetch('/api/ambulance/all')
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.querySelector("#ambulanceTable tbody");
+                    tbody.innerHTML = "";
+                    data.forEach(a => {
+                        tbody.innerHTML += `
+                        <tr>
+                            <td>${a.ambulanceId}</td>
+                            <td>${a.hospitalId}</td>
+                            <td>${a.location}</td>
+                            <td>${a.pincode}</td>
+                            <td>${a.driverName}</td>
+                            <td>${a.status}</td>
+                        </tr>`;
+                    });
+                });
+        }
+
+        // Load Hospitals
+        function loadHospitals() {
+            fetch('/api/hospital/all')
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.querySelector("#hospitalTable tbody");
+                    tbody.innerHTML = "";
+                    data.forEach(h => {
+                        tbody.innerHTML += `
+                        <tr>
+                            <td>${h.name}</td>
+                            <td>${h.location}</td>
+                            <td>${h.pincode}</td>
+                            <td>${h.availableBeds}</td>
+                        </tr>`;
+                    });
+                });
+        }
+
+        // Load Dispatch History
+        function loadDispatchHistory() {
+            fetch('/api/dispatch/history')
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.querySelector("#historyTable tbody");
+                    tbody.innerHTML = "";
+                    data.forEach(d => {
+                        tbody.innerHTML += `
+                        <tr>
+                            <td>${d.requestId}</td>
+                            <td>${d.patientName} (${d.patientPincode})</td>
+                            <td>${d.ambulanceId} (${d.driverName || 'N/A'})</td>
+                            <td>${d.hospitalName || d.hospitalId}</td>
+                            <td>${d.outcome}</td>
+                            <td>${d.dispatchTime}</td>
+                            <td>${d.explanation || 'N/A'}</td>
+                        </tr>`;
+                    });
+                });
+        }
+
+        // Auto-load
+        loadAmbulances();
+        loadHospitals();
+        loadDispatchHistory();
+    </script>
+</body>
+
+</html>
