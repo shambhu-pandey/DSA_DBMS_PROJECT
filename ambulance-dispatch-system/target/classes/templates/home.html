@@ -158,19 +158,23 @@
 
     <!-- Hospital List -->
     <div class="section">
-        <h2>🏥 Hospital List</h2>
+      <h2>🏥 Hospital List</h2>
         <button class="refresh-btn" onclick="loadHospitals()">🔄 Refresh</button>
         <table id="hospitalTable">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Location</th>
-                    <th>Pincode</th>
-                    <th>Available Beds</th>
+                     <th>ID</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Pincode</th>
+                <th>Available Beds</th>
+                <th>Action</th>
                 </tr>
             </thead>
             <tbody></tbody>
-        </table>
+        </table> 
+
+         
     </div>
 
     <!-- Dispatch History -->
@@ -191,6 +195,31 @@
             <tbody></tbody>
         </table>
     </div>
+
+     <!-- reassign emergency -->
+<div class="section">
+    <h2>⏳ Reassigned Emergencies</h2>
+    <button class="refresh-btn" onclick="loadReassigned()">🔄 Refresh</button>
+    <table id="reassignedTable">
+        <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Patient</th>
+                <th>Ambulance</th>
+                <th>Hospital</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+
+    <div id="notification-area">
+  <button onclick="toggleNotifications()">Notifications (<span id="notif-count">0</span>)</button>
+  <div id="notif-list" style="display:none;"></div>
+</div>
+
 
     <script>
         const hospitalResult = document.getElementById('hospitalResult');
@@ -255,6 +284,7 @@
                     🚐 <b>Ambulance:</b> ${data.assignedAmbulance.ambulanceId}<br>
                     👨‍✈ <b>Driver:</b> ${data.assignedAmbulance.driverName} <span style="color:#007bff;">(📞 ${data.assignedAmbulance.driverPhone})</span><br>
                     <b>Ambulance Pincode:</b> ${data.assignedAmbulance.pincode}<br>
+                    🚐<b>Estimated Arrival:</b> ${data.etaMinutes} minutes<br>
                     🏥 <b>Hospital:</b> ${data.assignedHospital.name} <span style="color:#007bff;">(Beds Left: ${data.assignedHospital.availableBeds})</span><br>
                     <b>Hospital Pincode:</b> ${data.assignedHospital.pincode}<br>
                     <span style="color:#ff9800;">📌 Why:</span> Nearest ambulance and hospital with available beds.
@@ -290,16 +320,115 @@
         }); }
 
         // Load Hospitals
-        function loadHospitals(){ fetch('/api/hospital/all').then(res=>res.json()).then(data=>{
-            const tbody=document.querySelector("#hospitalTable tbody"); tbody.innerHTML="";
-            data.forEach(h=>{ tbody.innerHTML+=`<tr>
-                <td><b>${h.name}</b></td>
-                <td>${h.location}</td>
-                <td>${h.pincode}</td>
-                <td><span style="color:#007bff;">${h.availableBeds}</span></td>
-            </tr>`; });
-        }); }
+    
+        // Load Hospitals
+        function loadHospitals() {
+            fetch('/api/hospital/all')
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.querySelector("#hospitalTable tbody");
+                    tbody.innerHTML = "";
+                    data.forEach(h => {
+                        tbody.innerHTML += `
+                        <tr>
+                            <td>${h.id}</td>
+                            <td><b>${h.name}</b></td>
+                            <td>${h.location}</td>
+                            <td>${h.pincode}</td>
+                            <td>${h.availableBeds}</td>
+                            <td><button onclick="deleteHospital('${h.id}')">🗑️ Delete</button></td>
+                        </tr>`;
+                    });
+                });
+        }
 
+        // Delete Hospital by ID
+        function deleteHospital(id) {
+            if (confirm("Are you sure you want to delete this hospital?")) {
+                fetch(`/api/hospital/delete/${id}`, { method: "DELETE" })
+                    .then(res => res.text())
+                    .then(msg => {
+                        alert(msg);
+                        loadHospitals();
+                    });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+function toggleNotifications() {
+  const list = document.getElementById('notif-list');
+  list.style.display = list.style.display === 'none' ? 'block' : 'none';
+}
+
+async function fetchNotifications() {
+  try {
+    const res = await fetch('/api/notifications/unread');
+    const data = await res.json();
+
+    const count = Array.isArray(data) ? data.length : 0;
+    document.getElementById('notif-count').textContent = count;
+
+    const list = document.getElementById('notif-list');
+    list.innerHTML = data.map(n => `
+      <div>
+        <strong>${n.title}</strong><br>
+        ${n.message}<br>
+        <button onclick="markRead('${n.id}')">Mark as read</button>
+        <hr>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error("Notification fetch failed:", err);
+    document.getElementById('notif-count').textContent = "!";
+  }
+}
+
+async function markRead(id) {
+  await fetch('/api/notifications/' + id + '/read', { method: 'POST' });
+  fetchNotifications();
+}
+
+setInterval(fetchNotifications, 7000);
+fetchNotifications();
+
+
+
+
+
+function loadReassigned() {
+    fetch('/dispatch/reassigned')
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.querySelector("#reassignedTable tbody");
+            tbody.innerHTML = "";
+            data.forEach(d => {
+                tbody.innerHTML += `<tr>
+                    <td>${d.requestId}</td>
+                    <td>${d.patientName} (${d.patientPincode})</td>
+                    <td><b>${d.ambulanceId || 'N/A'}</b></td>
+                    <td>${d.hospitalName || 'N/A'}</td>
+                    <td>${d.dispatchTime ? new Date(d.dispatchTime.replace(' ', 'T')).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' }) : 'N/A'}</td>
+                </tr>`;
+            });
+        });
+}
+
+
+
+
+
+
+        // Load on page start
+        window.onload = loadHospitals;
+    
         // Load Dispatch History
         function loadDispatchHistory(){ fetch('/api/dispatch/history').then(res=>res.json()).then(data=>{
             const tbody=document.querySelector("#historyTable tbody"); tbody.innerHTML="";

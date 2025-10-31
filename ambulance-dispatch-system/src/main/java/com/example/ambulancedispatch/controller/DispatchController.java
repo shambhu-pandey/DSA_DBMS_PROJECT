@@ -19,4 +19,10 @@ public class DispatchController {
     public List<DispatchHistory> getHistory() {
         return historyRepo.findAll();
     }
+
+    @GetMapping("/reassigned")
+public List<DispatchHistory> getReassignedOnly() {
+    return historyRepo.findByExplanationContainingIgnoreCase("auto-reassignment");
+}
+
 }

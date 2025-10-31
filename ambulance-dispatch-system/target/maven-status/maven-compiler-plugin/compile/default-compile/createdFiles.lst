@@ -8,6 +8,7 @@ com\example\ambulancedispatch\service\Dijkstra$Result.class
 com\example\ambulancedispatch\controller\HomeController.class
 com\example\ambulancedispatch\controller\EmergencyController.class
 com\example\ambulancedispatch\service\AmbulanceService.class
+com\example\ambulancedispatch\model\Notification.class
 com\example\ambulancedispatch\service\MinHeapPriorityQueue.class
 com\example\ambulancedispatch\service\MinHeapPriorityQueue$AmbulanceDistance.class
 com\example\ambulancedispatch\AmbulanceDispatchApplication.class
@@ -19,7 +20,9 @@ com\example\ambulancedispatch\repository\HospitalRepository.class
 com\example\ambulancedispatch\service\Graph$Edge.class
 com\example\ambulancedispatch\controller\WebController.class
 com\example\ambulancedispatch\model\DispatchHistory.class
+com\example\ambulancedispatch\service\NotificationService.class
 com\example\ambulancedispatch\service\Dijkstra.class
+com\example\ambulancedispatch\repository\NotificationRepository.class
 com\example\ambulancedispatch\repository\DispatchHistoryRepository.class
 com\example\ambulancedispatch\model\Hospital.class
 com\example\ambulancedispatch\repository\AmbulanceRepository.class

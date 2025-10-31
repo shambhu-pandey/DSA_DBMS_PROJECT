@@ -262,6 +262,18 @@ public class HomeController implements CommandLineRunner {
                                         @RequestParam String status) {
         return dispatcherService.updateAmbulanceStatus(ambulanceId, status);
     }
+
+    // Delete Hospital by ID
+@DeleteMapping("/hospital/delete/{id}")
+public String deleteHospital(@PathVariable String id) {
+    if (hospitalRepo.existsById(id)) {
+        hospitalRepo.deleteById(id);
+        return "✅ Hospital deleted successfully!";
+    } else {
+        return "❌ Hospital not found!";
+    }
+}
+
 }
 
 

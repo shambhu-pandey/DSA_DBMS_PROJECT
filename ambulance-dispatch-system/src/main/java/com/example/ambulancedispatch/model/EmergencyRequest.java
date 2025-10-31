@@ -19,6 +19,7 @@ public class EmergencyRequest {
     private Hospital assignedHospital;
     private LocalDateTime requestTime;
     private LocalDateTime updateTime;
+    private int etaMinutes; // ✅ ETA field added
 
     public EmergencyRequest() {
         this.requestTime = LocalDateTime.now();
@@ -74,4 +75,8 @@ public class EmergencyRequest {
 
     public LocalDateTime getUpdateTime() { return updateTime; }
     public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
+
+    // ✅ ETA Getter and Setter
+    public int getEtaMinutes() { return etaMinutes; }
+    public void setEtaMinutes(int etaMinutes) { this.etaMinutes = etaMinutes; }
 }
