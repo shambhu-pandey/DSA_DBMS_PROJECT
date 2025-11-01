@@ -39,5 +39,7 @@ public class AmbulanceController {
     public String updateAmbulanceStatus(@RequestParam String ambulanceId, @RequestParam String status) {
         return dispatcherService.updateAmbulanceStatus(ambulanceId, status);
     }
+
+    
 }
 
