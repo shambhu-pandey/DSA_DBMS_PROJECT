@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Ambulance Dispatch System</title>
-  <style>
+  <title>Ambulance Dispatch System</title>
+  <style>
   /* 🔷 Base Layout */
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
@@ -68,14 +68,14 @@
 
   /* 🔷 Form Group Spacing */
   .form-group {
-    margin: 2px 0; /* 🔧 Adjust vertical spacing between label-input pairs */
+    margin: 8px 0;
   }
 
   label {
     display: block;
     font-weight: 500;
     color: #444;
-    margin-bottom: 2px; /* 🔧 Space between label and input */
+    margin-bottom: 6px;
   }
 
   input, select {
@@ -84,7 +84,7 @@
     border: 1px solid #bbb;
     border-radius: 6px;
     font-size: 1em;
-    margin-bottom: 2px; /* 🔧 Space below each input box */
+    margin-bottom: 8px;
     background: #f7fbff;
     transition: border 0.2s;
   }
@@ -123,6 +123,11 @@
     border-left: 5px solid #007bff;
     font-size: 1.08em;
     box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  }
+
+  .error {
+    color: #d32f2f;
+    font-size: 1.05em;
   }
 
   /* 🔷 Tables */
@@ -245,47 +250,44 @@
     #historyTable td.why { max-width: 140px; font-size: 0.95em; }
   }
 </style>
-
-
-
 </head>
 <body>
-  <h1>🚑 Ambulance Dispatch System</h1>
+  <h1>🚑 Ambulance Dispatch System</h1>
 
-    <nav>
-    <button onclick="showSection('hospital')">🏥 Hospital</button>
-    <button onclick="showSection('ambulance')">🚐 Ambulance</button>
-    <button onclick="showSection('request')">🚨 Request</button>
-    <button onclick="showSection('update')">🔄 Update Status</button>
-    <button onclick="showSection('dispatch')">📜 Dispatch</button>
-    <button onclick="showSection('reassigned')">⏳ Reassigned</button>
-    <button onclick="showSection('notifications')">🔔 Notifications</button>
-  </nav>
+    <nav>
+    <button onclick="showSection('hospital')">🏥 Hospital</button>
+    <button onclick="showSection('ambulance')">🚐 Ambulance</button>
+    <button onclick="showSection('request')">🚨 Request</button>
+    <button onclick="showSection('update')">🔄 Update Status</button>
+    <button onclick="showSection('dispatch')">📜 Dispatch</button>
+    <button onclick="showSection('reassigned')">⏳ Reassigned</button>
+    <button onclick="showSection('notifications')">🔔 Notifications</button>
+  </nav>
 
-    <div id="hospital" class="section" style="display:block;">
-    <h2>🏥 Register Hospital</h2>
-    <form id="hospitalForm">
-        <div class="form-group">
-            <label for="hospitalName">Hospital Name:</label>
-            <input type="text" id="hospitalName" required>
-        </div>
-        <div class="form-group">
-            <label for="hospitalLocation">Location:</label>
-            <input type="text" id="hospitalLocation" required>
-        </div>
-        <div class="form-group">
-            <label for="hospitalPincode">Pincode:</label>
-            <input type="text" id="hospitalPincode" required>
-        </div>
-        <div class="form-group">
-            <label for="availableBeds">Available Beds:</label>
-            <input type="number" id="availableBeds" required>
-        </div>
-        <button type="submit">Register Hospital</button>
-    </form>
-    <div id="hospitalResult" class="result" style="display: none;"></div>
+    <div id="hospital" class="section" style="display:block;">
+    <h2>🏥 Register Hospital</h2>
+    <form id="hospitalForm" novalidate>
+        <div class="form-group">
+            <label for="hospitalName">Hospital Name:</label>
+            <input type="text" id="hospitalName" required>
+        </div>
+        <div class="form-group">
+            <label for="hospitalLocation">Location:</label>
+            <input type="text" id="hospitalLocation" required>
+        </div>
+        <div class="form-group">
+            <label for="hospitalPincode">Pincode:</label>
+            <input type="text" id="hospitalPincode" required pattern="\d{6}" maxlength="6" title="Enter a 6-digit pincode">
+        </div>
+        <div class="form-group">
+            <label for="availableBeds">Available Beds:</label>
+            <input type="number" id="availableBeds" required min="0" title="Enter a non-negative number">
+        </div>
+        <button type="submit">Register Hospital</button>
+    </form>
+    <div id="hospitalResult" class="result" style="display: none;"></div>
 
-    
+    
     <h2>🏥 Hospital List</h2>
     <button class="refresh-btn" onclick="loadHospitals()">🔄 Refresh</button>
     <table id="hospitalTable">
@@ -301,40 +303,41 @@
         </thead>
         <tbody></tbody>
     </table>
-  </div>
+  </div>
 
-  <div id="ambulance" class="section" style="display:none;">
-    <h2>🚐 Register Ambulance</h2>
-    <form id="ambulanceForm">
-        <div class="form-group">
-            <label for="ambulanceId">Ambulance ID:</label>
-            <input type="text" id="ambulanceId" required>
-        </div>
-        <div class="form-group">
-            <label for="ambulanceHospital">Hospital ID:</label>
-            <input type="text" id="ambulanceHospital" required>
-        </div>
-        <div class="form-group">
-            <label for="ambulanceLocation">Location:</label>
-            <input type="text" id="ambulanceLocation" required>
-        </div>
-        <div class="form-group">
-            <label for="ambulancePincode">Pincode:</label>
-            <input type="text" id="ambulancePincode" required>
-        </div>
-        <div class="form-group">
-            <label for="driverName">Driver Name:</label>
-            <input type="text" id="driverName" required>
-        </div>
-        <div class="form-group">
-            <label for="driverPhone">Driver Phone:</label>
-            <input type="text" id="driverPhone" required>
-        </div>
-        <button type="submit">Register Ambulance</button>
-    </form>
-    <div id="ambulanceResult" class="result" style="display: none;"></div>
+  <div id="ambulance" class="section" style="display:none;">
+    <h2>🚐 Register Ambulance</h2>
+    <form id="ambulanceForm" novalidate>
+        <div class="form-group">
+            <label for="ambulanceId">Ambulance ID:</label>
+            <!-- Enforce new rule: uppercase A followed by 1-6 digits -->
+            <input type="text" id="ambulanceId" required pattern="^A\d{1,6}$" maxlength="7" title="Must start with capital A followed by digits, e.g., A10">
+        </div>
+        <div class="form-group">
+            <label for="ambulanceHospital">Hospital ID:</label>
+            <input type="text" id="ambulanceHospital" required>
+        </div>
+        <div class="form-group">
+            <label for="ambulanceLocation">Location:</label>
+            <input type="text" id="ambulanceLocation" required>
+        </div>
+        <div class="form-group">
+            <label for="ambulancePincode">Pincode:</label>
+            <input type="text" id="ambulancePincode" required pattern="\d{6}" maxlength="6" title="Enter a 6-digit pincode">
+        </div>
+        <div class="form-group">
+            <label for="driverName">Driver Name:</label>
+            <input type="text" id="driverName" required>
+        </div>
+        <div class="form-group">
+            <label for="driverPhone">Driver Phone:</label>
+            <input type="text" id="driverPhone" required pattern="\d{10}" maxlength="10" title="Enter a 10-digit phone number">
+        </div>
+        <button type="submit">Register Ambulance</button>
+    </form>
+    <div id="ambulanceResult" class="result" style="display: none;"></div>
 
-    <h2>📊 Ambulance List</h2>
+    <h2>📊 Ambulance List</h2>
     <button class="refresh-btn" onclick="loadAmbulances()">🔄 Refresh</button>
     <table id="ambulanceTable">
         <thead>
@@ -349,260 +352,341 @@
         </thead>
         <tbody></tbody>
     </table>
-  </div>
+  </div>
 
-  <div id="request" class="section" style="display:none;">
-    <h2>🚨 New Emergency Request</h2>
-    <form id="emergencyForm">
-        <div class="form-group">
-            <label for="patientName">Patient Name:</label>
-            <input type="text" id="patientName" required>
-        </div>
-        <div class="form-group">
-            <label for="contactNo">Contact Number:</label>
-            <input type="text" id="contactNo" required>
-        </div>
-        <div class="form-group">
-            <label for="emergencyType">Emergency Type:</label>
-            <select id="emergencyType" required>
-                <option value="CRITICAL">Critical</option>
-                <option value="MAJOR">Major</option>
-                <option value="MINOR">Minor</option>
-                <option value="OTHER">Other</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="patientLocation">Patient Location:</label>
-            <input type="text" id="patientLocation" required>
-        </div>
-        <div class="form-group">
-            <label for="patientPincode">Patient Pincode:</label>
-            <input type="text" id="patientPincode" required>
-        </div>
-        <button type="submit">Create Emergency Request</button>
-    </form>
-    <div id="emergencyResult" class="result" style="display: none;"></div>
-  </div>
+  <div id="request" class="section" style="display:none;">
+    <h2>🚨 New Emergency Request</h2>
+    <form id="emergencyForm" novalidate>
+        <div class="form-group">
+            <label for="patientName">Patient Name:</label>
+            <input type="text" id="patientName" required>
+        </div>
+        <div class="form-group">
+            <label for="contactNo">Contact Number:</label>
+            <input type="text" id="contactNo" required pattern="\d{10}" maxlength="10" title="Enter a 10-digit phone number">
+        </div>
+        <div class="form-group">
+            <label for="emergencyType">Emergency Type:</label>
+            <select id="emergencyType" required>
+                <option value="CRITICAL">Critical</option>
+                <option value="MAJOR">Major</option>
+                <option value="MINOR">Minor</option>
+                <option value="OTHER">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="patientLocation">Patient Location:</label>
+            <input type="text" id="patientLocation" required>
+        </div>
+        <div class="form-group">
+            <label for="patientPincode">Patient Pincode:</label>
+            <input type="text" id="patientPincode" required pattern="\d{6}" maxlength="6" title="Enter a 6-digit pincode">
+        </div>
+        <button type="submit">Create Emergency Request</button>
+    </form>
+    <div id="emergencyResult" class="result" style="display: none;"></div>
+  </div>
 
-  <div id="update" class="section" style="display:none;">
-    <h2>🚐 Update Ambulance Status</h2>
-    <form id="updateAmbulanceForm">
-        <label for="updateAmbulanceId">Ambulance ID:</label>
-        <input type="text" id="updateAmbulanceId" required>
-        <label for="ambulanceStatus">Status:</label>
-        <select id="ambulanceStatus">
-            <option value="AVAILABLE">AVAILABLE</option>
-            <option value="BUSY">BUSY</option>
-            <option value="OFFLINE">OFFLINE</option>
-        </select>
-        <button type="submit">Update</button>
-    </form>
-    <div id="updateResult" class="result" style="display: none;"></div>
-  </div>
+  <div id="update" class="section" style="display:none;">
+    <h2>🚐 Update Ambulance Status</h2>
+    <form id="updateAmbulanceForm" novalidate>
+        <label for="updateAmbulanceId">Ambulance ID:</label>
+        <input type="text" id="updateAmbulanceId" required pattern="[A-Za-z0-9\-]{2,30}" title="3-30 characters; letters, digits and hyphen allowed">
+        <label for="ambulanceStatus">Status:</label>
+        <select id="ambulanceStatus">
+            <option value="AVAILABLE">AVAILABLE</option>
+            <option value="BUSY">BUSY</option>
+            <option value="OFFLINE">OFFLINE</option>
+        </select>
+        <button type="submit">Update</button>
+    </form>
+    <div id="updateResult" class="result" style="display: none;"></div>
+  </div>
 
-  <div id="dispatch" class="section" style="display:none;">
-    <h2>📜 Dispatch History</h2>
-    <button class="refresh-btn" onclick="loadDispatchHistory()">🔄 Refresh</button>
-    <table id="historyTable">
-        <thead>
-            <tr>
-                <th>Request ID</th>
-                <th>Patient</th>
-                <th>Ambulance</th>
-                <th>Hospital</th>
-                <th class="why">Outcome</th>
-                <th>Time</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-  </div>
+  <div id="dispatch" class="section" style="display:none;">
+    <h2>📜 Dispatch History</h2>
+    <button class="refresh-btn" onclick="loadDispatchHistory()">🔄 Refresh</button>
+    <table id="historyTable">
+        <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Patient</th>
+                <th>Ambulance</th>
+                <th>Hospital</th>
+                <th class="why">Outcome</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+  </div>
 
-  <div id="reassigned" class="section" style="display:none;">
-    <h2>⏳ Reassigned Emergencies</h2>
-    <button class="refresh-btn" onclick="loadReassigned()">🔄 Refresh</button>
-    <table id="reassignedTable">
-        <thead>
-            <tr>
-                <th>Request ID</th>
-                <th>Patient</th>
-                <th>Ambulance</th>
-                <th>Hospital</th>
-                <th>Time</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-  </div>
+  <div id="reassigned" class="section" style="display:none;">
+    <h2>⏳ Reassigned Emergencies</h2>
+    <button class="refresh-btn" onclick="loadReassigned()">🔄 Refresh</button>
+    <table id="reassignedTable">
+        <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Patient</th>
+                <th>Ambulance</th>
+                <th>Hospital</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+  </div>
 
-  <div id="notifications" class="section" style="display:none;">
+  <div id="notifications" class="section" style="display:none;">
     <h2>🔔 Notifications</h2>
     <div id="notification-content">
         <p>Notifications will appear here. The floating button is also available.</p>
     </div>
-  </div>
+  </div>
     
-    <div id="notification-area">
-    <button onclick="toggleNotifications()">🔔 Notifications (<span id="notif-count">0</span>)</button>
-    <div id="notif-list" style="display:none;"></div>
-  </div>
+   <div id="notification-area">
+    <button onclick="toggleNotifications()">🔔 Notifications (<span id="notif-count">0</span>)</button>
+    <div id="notif-list" style="display:none;"></div>
+  </div>
 
-    <script>
-    function showSection(id) {
-      const sections = ['hospital','ambulance','request','update','dispatch','reassigned','notifications'];
-      sections.forEach(s => {
-        document.getElementById(s).style.display = (s === id) ? 'block' : 'none';
-      });
-      // Optionally refresh data when a section is shown
-      if (id === 'hospital') loadHospitals();
-      if (id === 'ambulance') loadAmbulances();
-      if (id === 'dispatch') loadDispatchHistory();
-      if (id === 'reassigned') loadReassigned();
-      if (id === 'notifications') fetchNotifications(); // Refresh notifications when section is opened
-    }
+    <script>
+    function showSection(id) {
+      const sections = ['hospital','ambulance','request','update','dispatch','reassigned','notifications'];
+      sections.forEach(s => {
+        document.getElementById(s).style.display = (s === id) ? 'block' : 'none';
+      });
+      if (id === 'hospital') loadHospitals();
+      if (id === 'ambulance') loadAmbulances();
+      if (id === 'dispatch') loadDispatchHistory();
+      if (id === 'reassigned') loadReassigned();
+      if (id === 'notifications') fetchNotifications();
+    }
 
-    const hospitalResult = document.getElementById('hospitalResult');
-    const ambulanceResult = document.getElementById('ambulanceResult');
-    const updateResult = document.getElementById('updateResult');
-    const emergencyResult = document.getElementById('emergencyResult');
+    const hospitalResult = document.getElementById('hospitalResult');
+    const ambulanceResult = document.getElementById('ambulanceResult');
+    const updateResult = document.getElementById('updateResult');
+    const emergencyResult = document.getElementById('emergencyResult');
 
-    // Hospital Registration
-    document.getElementById('hospitalForm').addEventListener('submit', e => {
-        e.preventDefault();
-        const hospital = {
-            name: document.getElementById('hospitalName').value,
-            location: document.getElementById('hospitalLocation').value,
-            pincode: document.getElementById('hospitalPincode').value,
-            availableBeds: parseInt(document.getElementById('availableBeds').value)
-        };
-        fetch('/api/hospital/add', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(hospital)})
-        .then(res=>res.json()).then(()=>{ hospitalResult.style.display='block'; hospitalResult.innerHTML='✅ Hospital registered successfully!'; e.target.reset(); loadHospitals(); });
-    });
+    // Helper: show validation message from HTML5 validity or custom
+    function showFormError(resultElem, message) {
+      resultElem.style.display = 'block';
+      resultElem.innerHTML = `<span class="error">❌ ${message}</span>`;
+    }
 
-    // Ambulance Registration
-    document.getElementById('ambulanceForm').addEventListener('submit', e => {
-        e.preventDefault();
-        const ambulance = {
-            ambulanceId: document.getElementById('ambulanceId').value,
-            hospitalId: document.getElementById('ambulanceHospital').value,
-            location: document.getElementById('ambulanceLocation').value,
-            pincode: document.getElementById('ambulancePincode').value,
-            driverName: document.getElementById('driverName').value,
-            driverPhone: document.getElementById('driverPhone').value,
-            status:'AVAILABLE'
-        };
-        fetch('/api/ambulance/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ambulance)})
-        .then(res=>res.json()).then(()=>{ ambulanceResult.style.display='block'; ambulanceResult.innerHTML='✅ Ambulance registered successfully!'; e.target.reset(); loadAmbulances(); });
-    });
+    // Hospital Registration
+    document.getElementById('hospitalForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const form = e.target;
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        const hospital = {
+            name: document.getElementById('hospitalName').value.trim(),
+            location: document.getElementById('hospitalLocation').value.trim(),
+            pincode: document.getElementById('hospitalPincode').value.trim(),
+            availableBeds: parseInt(document.getElementById('availableBeds').value, 10)
+        };
+        fetch('/api/hospital/add', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(hospital)})
+        .then(async res=>{
+          if(!res.ok) {
+            const text = await res.text();
+            showFormError(hospitalResult, text || 'Failed to register hospital');
+            return;
+          }
+          return res.json();
+        })
+        .then(()=>{ hospitalResult.style.display='block'; hospitalResult.innerHTML='✅ Hospital registered successfully!'; form.reset(); loadHospitals(); });
+    });
 
-    // Emergency Request
-    document.getElementById('emergencyForm').addEventListener('submit', e=>{
-        e.preventDefault();
-        const pincode=parseInt(document.getElementById('patientPincode').value);
-        if(isNaN(pincode) || pincode<600001 || pincode>600130){
-            emergencyResult.style.display='block';
-            emergencyResult.innerHTML=`<span style="color:#d32f2f;font-size:1.15em;">❌ Sorry, our service is not available for pincode <b>${pincode}</b>.<br><span style="color:#007bff;">We only serve Chennai (600001-600130).</span></span>`;
-            return;
-        }
-        const request={
-            patientName: document.getElementById('patientName').value,
-            contactNo: document.getElementById('contactNo').value,
-            emergencyType: document.getElementById('emergencyType').value,
-            patientLocation: document.getElementById('patientLocation').value,
-            pincode
-        };
-        fetch('/api/emergency/new',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(request)})
-        .then(res=>res.json()).then(data=>{
-            emergencyResult.style.display='block';
-            if(data.status==='ASSIGNED'){
-                emergencyResult.innerHTML=`<div style="font-size:1.1em;">
-                <span style="font-size:1.3em;">🚨 Emergency Request Created!</span><br>
-                <span>Status: <b style="color:#007bff">${data.status}</b></span><br><br>
-                <span style="color:#28a745;">✅ Assignment Details:</span><br>
-                <b>Patient Pincode:</b> ${data.pincode}<br>
-                🚐 <b>Ambulance:</b> ${data.assignedAmbulance.ambulanceId}<br>
-                👨‍✈ <b>Driver:</b> ${data.assignedAmbulance.driverName} <span style="color:#007bff;">(📞 ${data.assignedAmbulance.driverPhone})</span><br>
-                <b>Ambulance Pincode:</b> ${data.assignedAmbulance.pincode}<br>
-                🚐<b>Estimated Arrival:</b> ${data.etaMinutes} minutes<br>
-                🏥 <b>Hospital:</b> ${data.assignedHospital.name} <span style="color:#007bff;">(Beds Left: ${data.assignedHospital.availableBeds})</span><br>
-                <b>Hospital Pincode:</b> ${data.assignedHospital.pincode}<br>
-                <span style="color:#ff9800;">📌 Why:</span> Nearest ambulance and hospital with available beds.
-                </div>`;
-            } else {
-                emergencyResult.innerHTML=`<span style="font-size:1.2em;">🚨 Emergency Request Created! Status: <b>${data.status}</b></span>`;
-            }
-            e.target.reset();
-            loadAmbulances(); loadHospitals(); loadDispatchHistory();
-        });
-    });
+    // Ambulance Registration (with frontend unique-id check and A... rule)
+    document.getElementById('ambulanceForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const form = e.target;
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        const ambulanceIdRaw = document.getElementById('ambulanceId').value.trim();
+        const ambulanceId = ambulanceIdRaw.toUpperCase();
 
-    // Update Ambulance Status
-    document.getElementById("updateAmbulanceForm").addEventListener("submit", e=>{
-        e.preventDefault();
-        const ambulanceId=document.getElementById("updateAmbulanceId").value;
-        const status=document.getElementById("ambulanceStatus").value;
-        fetch(`/api/ambulance/update-status?ambulanceId=${ambulanceId}&status=${status}`,{method:"POST"})
-        .then(res=>res.text()).then(msg=>{ updateResult.style.display='block'; updateResult.innerText=msg; loadAmbulances(); });
-    });
+        // Enforce pattern client-side: A followed by 1-6 digits
+        const re = /^A\d{1,6}$/;
+        if (!re.test(ambulanceId)) {
+          showFormError(ambulanceResult, 'Ambulance ID invalid. It must start with capital A followed by digits (e.g., A10).');
+          return;
+        }
 
-    // Load Ambulances
-    function loadAmbulances(){ fetch('/api/ambulance/all').then(res=>res.json()).then(data=>{
-        const tbody=document.querySelector("#ambulanceTable tbody"); tbody.innerHTML="";
-        data.forEach(a=>{ tbody.innerHTML+=`<tr>
-            <td><b>${a.ambulanceId}</b></td>
-            <td>${a.hospitalId}</td>
-            <td>${a.location}</td>
-            <td>${a.pincode}</td>
-            <td>${a.driverName}</td>
-            <td><span style="color:${a.status==='AVAILABLE'?'#28a745':'#d32f2f'}">${a.status}</span></td>
-        </tr>`; });
-    }); }
+        // Optional: frontend check for duplicate ID using backend endpoint (if implemented)
+        try {
+          const existsRes = await fetch(`/api/ambulance/exists?ambulanceId=${encodeURIComponent(ambulanceId)}`);
+          if (existsRes.ok) {
+            const existsData = await existsRes.json();
+            if (existsData.exists) {
+              showFormError(ambulanceResult, `Ambulance ID "${ambulanceId}" already exists. Choose a different ID.`);
+              return;
+            }
+          }
+        } catch (err) {
+          // ignore if endpoint not available; server-side will validate anyway
+          console.warn('exists check failed', err);
+        }
 
-    // Load Hospitals
-    function loadHospitals() {
-        fetch('/api/hospital/all')
-            .then(res => res.json())
-            .then(data => {
-                const tbody = document.querySelector("#hospitalTable tbody");
-                tbody.innerHTML = "";
-                data.forEach(h => {
-                    tbody.innerHTML += `
-                    <tr>
-                        <td>${h.id}</td>
-                        <td><b>${h.name}</b></td>
-                        <td>${h.location}</td>
-                        <td>${h.pincode}</td>
-                        <td>${h.availableBeds}</td>
-                        <td><button onclick="deleteHospital('${h.id}')">🗑️ Delete</button></td>
-                    </tr>`;
-                });
-            });
-    }
+        const ambulance = {
+            ambulanceId,
+            hospitalId: document.getElementById('ambulanceHospital').value.trim(),
+            location: document.getElementById('ambulanceLocation').value.trim(),
+            pincode: document.getElementById('ambulancePincode').value.trim(),
+            driverName: document.getElementById('driverName').value.trim(),
+            driverPhone: document.getElementById('driverPhone').value.trim(),
+            status:'AVAILABLE'
+        };
+        fetch('/api/ambulance/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ambulance)})
+        .then(async res=>{
+          if(!res.ok) {
+            const text = await res.text();
+            showFormError(ambulanceResult, text || 'Failed to register ambulance');
+            return;
+          }
+          return res.json();
+        })
+        .then(()=>{ ambulanceResult.style.display='block'; ambulanceResult.innerHTML='✅ Ambulance registered successfully!'; form.reset(); loadAmbulances(); });
+    });
 
-    // Delete Hospital by ID
-    function deleteHospital(id) {
-        if (confirm("Are you sure you want to delete this hospital?")) {
-            fetch(`/api/hospital/delete/${id}`, { method: "DELETE" })
-                .then(res => res.text())
-                .then(msg => {
-                    alert(msg);
-                    loadHospitals();
-                });
-        }
-    }
+    // Emergency Request
+    document.getElementById('emergencyForm').addEventListener('submit', e=>{
+        e.preventDefault();
+        const form = e.target;
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        const pincodeVal = document.getElementById('patientPincode').value.trim();
+        const pincode = parseInt(pincodeVal, 10);
+        if(isNaN(pincode) || pincode < 600001 || pincode > 600130){
+            emergencyResult.style.display='block';
+            emergencyResult.innerHTML=`<span style="color:#d32f2f;font-size:1.15em;">❌ Sorry, our service is not available for pincode <b>${pincodeVal}</b>.<br><span style="color:#007bff;">We only serve Chennai (600001-600130).</span></span>`;
+            return;
+        }
+        const request={
+            patientName: document.getElementById('patientName').value.trim(),
+            contactNo: document.getElementById('contactNo').value.trim(),
+            emergencyType: document.getElementById('emergencyType').value,
+            patientLocation: document.getElementById('patientLocation').value.trim(),
+            pincode
+        };
+        fetch('/api/emergency/new',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(request)})
+        .then(async res=>{
+          if(!res.ok) {
+            const text = await res.text();
+            showFormError(emergencyResult, text || 'Failed to create emergency request');
+            return;
+          }
+          return res.json();
+        })
+        .then(data=>{
+            if(!data) return;
+            emergencyResult.style.display='block';
+            if(data.status==='ASSIGNED'){
+                emergencyResult.innerHTML=`<div style="font-size:1.1em;">
+                <span style="font-size:1.3em;">🚨 Emergency Request Created!</span><br>
+                <span>Status: <b style="color:#007bff">${data.status}</b></span><br><br>
+                <span style="color:#28a745;">✅ Assignment Details:</span><br>
+                <b>Patient Pincode:</b> ${data.pincode}<br>
+                🚐 <b>Ambulance:</b> ${data.assignedAmbulance.ambulanceId}<br>
+                👨‍✈ <b>Driver:</b> ${data.assignedAmbulance.driverName} <span style="color:#007bff;">(📞 ${data.assignedAmbulance.driverPhone})</span><br>
+                <b>Ambulance Pincode:</b> ${data.assignedAmbulance.pincode}<br>
+                🚐<b>Estimated Arrival:</b> ${data.etaMinutes} minutes<br>
+                🏥 <b>Hospital:</b> ${data.assignedHospital.name} <span style="color:#007bff;">(Beds Left: ${data.assignedHospital.availableBeds})</span><br>
+                <b>Hospital Pincode:</b> ${data.assignedHospital.pincode}<br>
+                <span style="color:#ff9800;">📌 Why:</span> Nearest ambulance and hospital with available beds.
+                </div>`;
+            } else {
+                emergencyResult.innerHTML=`<span style="font-size:1.2em;">🚨 Emergency Request Created! Status: <b>${data.status}</b></span>`;
+            }
+            form.reset();
+            loadAmbulances(); loadHospitals(); loadDispatchHistory();
+        });
+    });
 
-    // Load Dispatch History
-    function loadDispatchHistory(){ fetch('/api/dispatch/history').then(res=>res.json()).then(data=>{
-        const tbody=document.querySelector("#historyTable tbody"); tbody.innerHTML="";
-        data.forEach(d=>{ tbody.innerHTML+=`<tr>
-            <td>${d.requestId}</td>
-            <td>${d.patientName} (${d.patientPincode})</td>
-            <td><b>${d.ambulanceId||'N/A'}</b></td>
-            <td>${d.hospitalName||'N/A'}</td>
-            <td class="why">${d.outcome}</td>
-            <td>${d.dispatchTime ? new Date(d.dispatchTime.replace(' ', 'T')).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' }) : 'N/A'}</td>
-        </tr>`; });
-    }); }
+    // Update Ambulance Status
+    document.getElementById("updateAmbulanceForm").addEventListener("submit", e=>{
+        e.preventDefault();
+        const form = e.target;
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        const ambulanceId=document.getElementById("updateAmbulanceId").value.trim();
+        const status=document.getElementById("ambulanceStatus").value;
+        fetch(`/api/ambulance/update-status?ambulanceId=${encodeURIComponent(ambulanceId)}&status=${encodeURIComponent(status)}`,{method:"POST"})
+        .then(async res=>{
+          const text = await res.text();
+          updateResult.style.display='block';
+          updateResult.innerText = text;
+          loadAmbulances();
+        });
+    });
+
+    // Load Ambulances
+    function loadAmbulances(){ fetch('/api/ambulance/all').then(res=>res.json()).then(data=>{
+        const tbody=document.querySelector("#ambulanceTable tbody"); tbody.innerHTML="";
+        data.forEach(a=>{ tbody.innerHTML+=`<tr>
+            <td><b>${a.ambulanceId}</b></td>
+            <td>${a.hospitalId}</td>
+            <td>${a.location}</td>
+            <td>${a.pincode}</td>
+            <td>${a.driverName}</td>
+            <td><span style="color:${a.status==='AVAILABLE'?'#28a745':'#d32f2f'}">${a.status}</span></td>
+        </tr>`; });
+    }); }
+
+    // Load Hospitals
+    function loadHospitals() {
+        fetch('/api/hospital/all')
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.querySelector("#hospitalTable tbody");
+                tbody.innerHTML = "";
+                data.forEach(h => {
+                    tbody.innerHTML += `
+                    <tr>
+                        <td>${h.id}</td>
+                        <td><b>${h.name}</b></td>
+                        <td>${h.location}</td>
+                        <td>${h.pincode}</td>
+                        <td>${h.availableBeds}</td>
+                        <td><button onclick="deleteHospital('${h.id}')">🗑️ Delete</button></td>
+                    </tr>`;
+                });
+            });
+    }
+
+    // Delete Hospital by ID
+    function deleteHospital(id) {
+        if (confirm("Are you sure you want to delete this hospital?")) {
+            fetch(`/api/hospital/delete/${id}`, { method: "DELETE" })
+                .then(res => res.text())
+                .then(msg => {
+                    alert(msg);
+                    loadHospitals();
+                });
+        }
+    }
+
+    // Load Dispatch History
+    function loadDispatchHistory(){ fetch('/api/dispatch/history').then(res=>res.json()).then(data=>{
+        const tbody=document.querySelector("#historyTable tbody"); tbody.innerHTML="";
+        data.forEach(d=>{ tbody.innerHTML+=`<tr>
+            <td>${d.requestId}</td>
+            <td>${d.patientName} (${d.patientPincode})</td>
+            <td><b>${d.ambulanceId||'N/A'}</b></td>
+            <td>${d.hospitalName||'N/A'}</td>
+            <td class="why">${d.outcome}</td>
+            <td>${d.dispatchTime ? new Date(d.dispatchTime.replace(' ', 'T')).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' }) : 'N/A'}</td>
+        </tr>`; });
+    }); }
 
     // Load Reassigned Emergencies
     function loadReassigned() {
@@ -625,60 +709,59 @@
 
     // Notification Logic
     function toggleNotifications() {
-      const list = document.getElementById('notif-list');
-      list.style.display = list.style.display === 'none' ? 'block' : 'none';
+      const list = document.getElementById('notif-list');
+      list.style.display = list.style.display === 'none' ? 'block' : 'none';
     }
 
     async function fetchNotifications() {
-      try {
-        const res = await fetch('/api/notifications/unread');
-        const data = await res.json();
+      try {
+        const res = await fetch('/api/notifications/unread');
+        const data = await res.json();
 
-        const count = Array.isArray(data) ? data.length : 0;
-        document.getElementById('notif-count').textContent = count;
-        document.getElementById('notification-content').innerHTML = `<h3>Unread Notifications: ${count}</h3>`; // Update the section content
+        const count = Array.isArray(data) ? data.length : 0;
+        document.getElementById('notif-count').textContent = count;
+        document.getElementById('notification-content').innerHTML = `<h3>Unread Notifications: ${count}</h3>`;
 
-        const list = document.getElementById('notif-list');
-        list.innerHTML = data.map(n => `
-          <div>
-            <strong>${n.title}</strong><br>
-            ${n.message}<br>
-            <button onclick="markRead('${n.id}')">Mark as read</button>
-            <hr>
-          </div>
-        `).join('');
-        
-        // Also update the section with the notification list
+        const list = document.getElementById('notif-list');
+        list.innerHTML = data.map(n => `
+          <div>
+            <strong>${n.title}</strong><br>
+            ${n.message}<br>
+            <button onclick="markRead('${n.id}')">Mark as read</button>
+            <hr>
+          </div>
+        `).join('');
+
         document.getElementById('notification-content').innerHTML += data.map(n => `
-          <div class="result">
-            <strong>${n.title}</strong> - ${new Date(n.timestamp).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}<br>
-            ${n.message}<br>
-            <button onclick="markRead('${n.id}')">Mark as read</button>
-          </div>
-        `).join('');
-        
-      } catch (err) {
-        console.error("Notification fetch failed:", err);
-        document.getElementById('notif-count').textContent = "!";
-      }
+          <div class="result">
+            <strong>${n.title}</strong> - ${new Date(n.timestamp).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}<br>
+            ${n.message}<br>
+            <button onclick="markRead('${n.id}')">Mark as read</button>
+          </div>
+        `).join('');
+
+      } catch (err) {
+        console.error("Notification fetch failed:", err);
+        document.getElementById('notif-count').textContent = "!";
+      }
     }
 
     async function markRead(id) {
-      await fetch('/api/notifications/' + id + '/read', { method: 'POST' });
-      fetchNotifications();
+      await fetch('/api/notifications/' + id + '/read', { method: 'POST' });
+      fetchNotifications();
     }
 
     // Auto-refresh notifications and initial load
     setInterval(fetchNotifications, 7000);
-    
-    // Initial Load functions (runs on page load)
-    window.onload = () => {
-      loadHospitals();
-      loadAmbulances();
-      loadDispatchHistory();
-      loadReassigned();
-      fetchNotifications();
-    };
-  </script>
+    
+    // Initial Load functions (runs on page load)
+    window.onload = () => {
+      loadHospitals();
+      loadAmbulances();
+      loadDispatchHistory();
+      loadReassigned();
+      fetchNotifications();
+    };
+    </script>
 </body>
 </html>
