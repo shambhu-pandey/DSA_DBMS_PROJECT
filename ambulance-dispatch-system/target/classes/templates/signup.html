@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup | Ambulance Dispatch System</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #1e293b;
+      background:
+        linear-gradient(rgba(3, 105, 161, 0.72), rgba(15, 23, 42, 0.78)),
+        url("https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1600&q=80") center/cover fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .auth-panel {
+      width: min(460px, 100%);
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 8px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+      padding: 32px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      color: #0f4c81;
+      font-size: 1.85rem;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0 0 24px;
+      color: #52616f;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 7px;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid #b6c2d1;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: #f8fbff;
+    }
+
+    input:focus {
+      border-color: #0ea5e9;
+      outline: none;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.16);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 6px;
+      background: #0369a1;
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #075985;
+    }
+
+    .message {
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .auth-link {
+      margin-top: 22px;
+      text-align: center;
+      color: #475569;
+    }
+
+    .auth-link a {
+      color: #0369a1;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .auth-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <main class="auth-panel">
+    <h1>Create Account</h1>
+    <p class="subtitle">Create a user account for requesting ambulances. Admin and driver access is assigned by the system.</p>
+
+    <div class="message error" th:if="${error}" th:text="${error}"></div>
+
+    <form th:action="@{/signup}" method="post">
+      <label for="fullName">Full name</label>
+      <input id="fullName" name="fullName" type="text" required autocomplete="name">
+
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" required autocomplete="username">
+
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" minlength="6" required autocomplete="new-password">
+
+      <label for="confirmPassword">Confirm password</label>
+      <input id="confirmPassword" name="confirmPassword" type="password" minlength="6" required autocomplete="new-password">
+
+      <button type="submit">Create Account</button>
+    </form>
+
+    <p class="auth-link">
+      Already have an account? <a th:href="@{/login}">Back to login</a>
+    </p>
+  </main>
+</body>
+</html>

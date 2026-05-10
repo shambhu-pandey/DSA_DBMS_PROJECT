@@ -28,6 +28,11 @@
     top: 0;
     z-index: 1000;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
   nav button {
@@ -45,6 +50,37 @@
 
   nav button:hover {
     background: rgba(255,255,255,0.2);
+  }
+
+  .logout-form {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 8px;
+  }
+
+  .user-chip {
+    color: #dbeafe;
+    font-size: 0.94em;
+    font-weight: 600;
+    padding: 6px 10px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+  }
+
+  nav .logout-button {
+    background: #ffffff;
+    color: #004080;
+    margin: 0;
+    padding: 7px 14px;
+  }
+
+  nav .logout-button:hover {
+    background: #eaf6ff;
+  }
+
+  .access-hidden {
+    display: none !important;
   }
 
   /* 🔷 Section Container */
@@ -248,6 +284,7 @@
     .section { max-width: 98vw; padding: 16px; }
     input, select { width: 100%; }
     #historyTable td.why { max-width: 140px; font-size: 0.95em; }
+    .logout-form { margin-left: 0; }
   }
 </style>
 </head>
@@ -255,16 +292,23 @@
   <h1>🚑 Ambulance Dispatch System</h1>
 
     <nav>
-    <button onclick="showSection('hospital')">🏥 Hospital</button>
-    <button onclick="showSection('ambulance')">🚐 Ambulance</button>
-    <button onclick="showSection('request')">🚨 Request</button>
-    <button onclick="showSection('update')">🔄 Update Status</button>
-    <button onclick="showSection('dispatch')">📜 Dispatch</button>
-    <button onclick="showSection('reassigned')">⏳ Reassigned</button>
-    <button onclick="showSection('notifications')">🔔 Notifications</button>
+    <button class="admin-only" onclick="showSection('hospital')">🏥 Hospital</button>
+    <button class="driver-admin" onclick="showSection('ambulance')">🚐 Ambulance</button>
+    <button class="user-admin" onclick="showSection('request')">🚨 Request</button>
+    <button class="driver-admin" onclick="showSection('update')">🔄 Update Status</button>
+    <button class="driver-admin" onclick="showSection('dispatch')">📜 Dispatch</button>
+    <button class="driver-admin" onclick="showSection('reassigned')">⏳ Reassigned</button>
+    <button class="driver-admin" onclick="showSection('notifications')">🔔 Notifications</button>
+    <form class="logout-form" th:action="@{/logout}" method="post">
+      <span class="user-chip">
+        <strong th:text="${username}">admin</strong>
+        <span th:text="'(' + ${role} + ')'">(ADMIN)</span>
+      </span>
+      <button type="submit" class="logout-button">Logout</button>
+    </form>
   </nav>
 
-    <div id="hospital" class="section" style="display:block;">
+    <div id="hospital" class="section admin-only" style="display:block;">
     <h2>🏥 Register Hospital</h2>
     <form id="hospitalForm" novalidate>
         <div class="form-group">
@@ -305,9 +349,9 @@
     </table>
   </div>
 
-  <div id="ambulance" class="section" style="display:none;">
-    <h2>🚐 Register Ambulance</h2>
-    <form id="ambulanceForm" novalidate>
+  <div id="ambulance" class="section driver-admin" style="display:none;">
+    <h2 th:text="${role == 'DRIVER' ? '🚐 My Ambulance' : '🚐 Register Ambulance'}">🚐 Register Ambulance</h2>
+    <form id="ambulanceForm" class="admin-only" novalidate>
         <div class="form-group">
             <label for="ambulanceId">Ambulance ID:</label>
             <!-- Enforce new rule: uppercase A followed by 1-6 digits -->
@@ -354,7 +398,7 @@
     </table>
   </div>
 
-  <div id="request" class="section" style="display:none;">
+  <div id="request" class="section user-admin" style="display:none;">
     <h2>🚨 New Emergency Request</h2>
     <form id="emergencyForm" novalidate>
         <div class="form-group">
@@ -387,11 +431,11 @@
     <div id="emergencyResult" class="result" style="display: none;"></div>
   </div>
 
-  <div id="update" class="section" style="display:none;">
+  <div id="update" class="section driver-admin" style="display:none;">
     <h2>🚐 Update Ambulance Status</h2>
     <form id="updateAmbulanceForm" novalidate>
         <label for="updateAmbulanceId">Ambulance ID:</label>
-        <input type="text" id="updateAmbulanceId" required pattern="[A-Za-z0-9\-]{2,30}" title="3-30 characters; letters, digits and hyphen allowed">
+        <input type="text" id="updateAmbulanceId" required pattern="[A-Za-z0-9\-]{2,30}" title="3-30 characters; letters, digits and hyphen allowed" th:value="${role == 'DRIVER' ? assignedAmbulanceId : ''}" th:readonly="${role == 'DRIVER'}">
         <label for="ambulanceStatus">Status:</label>
         <select id="ambulanceStatus">
             <option value="AVAILABLE">AVAILABLE</option>
@@ -403,7 +447,7 @@
     <div id="updateResult" class="result" style="display: none;"></div>
   </div>
 
-  <div id="dispatch" class="section" style="display:none;">
+  <div id="dispatch" class="section driver-admin" style="display:none;">
     <h2>📜 Dispatch History</h2>
     <button class="refresh-btn" onclick="loadDispatchHistory()">🔄 Refresh</button>
     <table id="historyTable">
@@ -421,7 +465,7 @@
     </table>
   </div>
 
-  <div id="reassigned" class="section" style="display:none;">
+  <div id="reassigned" class="section driver-admin" style="display:none;">
     <h2>⏳ Reassigned Emergencies</h2>
     <button class="refresh-btn" onclick="loadReassigned()">🔄 Refresh</button>
     <table id="reassignedTable">
@@ -438,7 +482,7 @@
     </table>
   </div>
 
-  <div id="notifications" class="section" style="display:none;">
+  <div id="notifications" class="section driver-admin" style="display:none;">
     <h2>🔔 Notifications</h2>
     <div id="notification-content">
         <p>Notifications will appear here. The floating button is also available.</p>
@@ -450,11 +494,39 @@
     <div id="notif-list" style="display:none;"></div>
   </div>
 
-    <script>
+    <script th:inline="javascript">
+    const currentRole = /*[[${role}]]*/ 'USER';
+    const assignedAmbulanceId = /*[[${assignedAmbulanceId}]]*/ '';
+
+    function applyRoleAccess() {
+      document.querySelectorAll('.admin-only').forEach(el => {
+        el.classList.toggle('access-hidden', currentRole !== 'ADMIN');
+      });
+      document.querySelectorAll('.driver-admin').forEach(el => {
+        el.classList.toggle('access-hidden', !['ADMIN', 'DRIVER'].includes(currentRole));
+      });
+      document.querySelectorAll('.user-admin').forEach(el => {
+        el.classList.toggle('access-hidden', !['ADMIN', 'USER'].includes(currentRole));
+      });
+    }
+
+    function defaultSectionForRole() {
+      if (currentRole === 'ADMIN') return 'hospital';
+      if (currentRole === 'DRIVER') return 'ambulance';
+      return 'request';
+    }
+
     function showSection(id) {
       const sections = ['hospital','ambulance','request','update','dispatch','reassigned','notifications'];
+      const target = document.getElementById(id);
+      if (!target || target.classList.contains('access-hidden')) {
+        id = defaultSectionForRole();
+      }
       sections.forEach(s => {
-        document.getElementById(s).style.display = (s === id) ? 'block' : 'none';
+        const section = document.getElementById(s);
+        if (section) {
+          section.style.display = (s === id && !section.classList.contains('access-hidden')) ? 'block' : 'none';
+        }
       });
       if (id === 'hospital') loadHospitals();
       if (id === 'ambulance') loadAmbulances();
@@ -657,7 +729,7 @@
                         <td>${h.location}</td>
                         <td>${h.pincode}</td>
                         <td>${h.availableBeds}</td>
-                        <td><button onclick="deleteHospital('${h.id}')">🗑️ Delete</button></td>
+                        <td>${currentRole === 'ADMIN' ? `<button onclick="deleteHospital('${h.id}')">🗑️ Delete</button>` : ''}</td>
                     </tr>`;
                 });
             });
@@ -752,15 +824,17 @@
     }
 
     // Auto-refresh notifications and initial load
-    setInterval(fetchNotifications, 7000);
+    if (['ADMIN', 'DRIVER'].includes(currentRole)) {
+      setInterval(fetchNotifications, 7000);
+    }
     
     // Initial Load functions (runs on page load)
     window.onload = () => {
-      loadHospitals();
-      loadAmbulances();
-      loadDispatchHistory();
-      loadReassigned();
-      fetchNotifications();
+      applyRoleAccess();
+      showSection(defaultSectionForRole());
+      if (['ADMIN', 'DRIVER'].includes(currentRole)) {
+        fetchNotifications();
+      }
     };
     </script>
 </body>

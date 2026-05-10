@@ -134,7 +134,9 @@ package com.example.ambulancedispatch.controller;
 
 import com.example.ambulancedispatch.model.*;
 import com.example.ambulancedispatch.repository.*;
+import com.example.ambulancedispatch.service.AccessControlService;
 import com.example.ambulancedispatch.service.DispatcherService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.boot.CommandLineRunner;
@@ -159,6 +161,9 @@ public class HomeController implements CommandLineRunner {
 
     @Autowired
     private DispatcherService dispatcherService;
+
+    @Autowired
+    private AccessControlService accessControlService;
 
     // -------------------- SEED HELPERS --------------------
     private void seedHospital(String hospitalId, String name, String location,
@@ -223,12 +228,14 @@ public class HomeController implements CommandLineRunner {
     }
 
     @PostMapping("/hospital/add")
-    public Hospital addHospital(@RequestBody Hospital hospital) {
+    public Hospital addHospital(@RequestBody Hospital hospital, HttpSession session) {
+        accessControlService.requireAdmin(session);
         return hospitalRepo.save(hospital);
     }
 
     @PostMapping("/ambulance/add")
-    public Ambulance addAmbulance(@RequestBody Ambulance ambulance) {
+    public Ambulance addAmbulance(@RequestBody Ambulance ambulance, HttpSession session) {
+        accessControlService.requireAdmin(session);
         return ambulanceRepo.save(ambulance);
     }
 
@@ -238,34 +245,59 @@ public class HomeController implements CommandLineRunner {
     }
 
     @GetMapping("/ambulance/all")
-    public List<Ambulance> getAllAmbulances() {
+    public List<Ambulance> getAllAmbulances(HttpSession session) {
+        if (accessControlService.isDriver(session)) {
+            String assignedAmbulanceId = accessControlService.getAssignedAmbulanceId(session);
+            return ambulanceRepo.findAll().stream()
+                    .filter(ambulance -> assignedAmbulanceId != null
+                            && assignedAmbulanceId.equalsIgnoreCase(ambulance.getAmbulanceId()))
+                    .toList();
+        }
+        if (accessControlService.isUser(session)) {
+            return List.of();
+        }
+
         return ambulanceRepo.findAll();
     }
 
     @PostMapping("/emergency/new")
-    public EmergencyRequest newEmergency(@RequestBody EmergencyRequest request) {
+    public EmergencyRequest newEmergency(@RequestBody EmergencyRequest request, HttpSession session) {
+        accessControlService.requireAnyRole(session, "ADMIN", "USER");
         return dispatcherService.dispatchEmergencyWithPincode(request);
     }
 
     @GetMapping("/emergency/active")
-    public List<EmergencyRequest> getActiveRequests() {
+    public List<EmergencyRequest> getActiveRequests(HttpSession session) {
+        accessControlService.requireAdmin(session);
         return requestRepo.findAll();
     }
 
     @GetMapping("/dispatch/history")
-    public List<DispatchHistory> getDispatchHistory() {
+    public List<DispatchHistory> getDispatchHistory(HttpSession session) {
+        if (accessControlService.isDriver(session)) {
+            String assignedAmbulanceId = accessControlService.getAssignedAmbulanceId(session);
+            return historyRepo.findAll().stream()
+                    .filter(history -> assignedAmbulanceId != null
+                            && assignedAmbulanceId.equalsIgnoreCase(history.getAmbulanceId()))
+                    .toList();
+        }
+
+        accessControlService.requireAdmin(session);
         return historyRepo.findAll();
     }
 
     @PostMapping("/ambulance/update-status")
     public String updateAmbulanceStatus(@RequestParam String ambulanceId,
-                                        @RequestParam String status) {
+                                        @RequestParam String status,
+                                        HttpSession session) {
+        accessControlService.requireAmbulanceManager(session, ambulanceId);
         return dispatcherService.updateAmbulanceStatus(ambulanceId, status);
     }
 
     // Delete Hospital by ID
 @DeleteMapping("/hospital/delete/{id}")
-public String deleteHospital(@PathVariable String id) {
+public String deleteHospital(@PathVariable String id, HttpSession session) {
+    accessControlService.requireAdmin(session);
     if (hospitalRepo.existsById(id)) {
         hospitalRepo.deleteById(id);
         return "✅ Hospital deleted successfully!";

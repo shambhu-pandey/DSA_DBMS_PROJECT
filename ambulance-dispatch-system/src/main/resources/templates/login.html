@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Ambulance Dispatch System</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #1e293b;
+      background:
+        linear-gradient(rgba(7, 89, 133, 0.72), rgba(15, 23, 42, 0.76)),
+        url("https://images.unsplash.com/photo-1582719471384-894fbb16e074?auto=format&fit=crop&w=1600&q=80") center/cover fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .auth-panel {
+      width: min(430px, 100%);
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 8px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+      padding: 32px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      color: #0f4c81;
+      font-size: 1.85rem;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0 0 24px;
+      color: #52616f;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 7px;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid #b6c2d1;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: #f8fbff;
+    }
+
+    input:focus {
+      border-color: #0ea5e9;
+      outline: none;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.16);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 6px;
+      background: #0369a1;
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #075985;
+    }
+
+    .message {
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .success {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .demo-box {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 6px;
+      background: #eef6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
+      line-height: 1.6;
+    }
+
+    .auth-link {
+      margin-top: 22px;
+      text-align: center;
+      color: #475569;
+    }
+
+    .auth-link a {
+      color: #0369a1;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .auth-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <main class="auth-panel">
+    <h1>Ambulance Dispatch Login</h1>
+    <p class="subtitle">Sign in to manage hospitals, ambulances, requests, dispatch history, and notifications.</p>
+
+    <div class="message error" th:if="${error}" th:text="${error}"></div>
+    <div class="message success" th:if="${success}" th:text="${success}"></div>
+
+    <form th:action="@{/login}" method="post">
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" required autocomplete="username" autofocus>
+
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required autocomplete="current-password">
+
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="demo-box">
+      <strong>Demo accounts</strong><br>
+      Admin: <span th:text="${demoUsername}">admin</span> / <span th:text="${demoPassword}">admin12345</span><br>
+      Driver: driver1 / driver12345<br>
+      User: user1 / user12345
+    </div>
+
+    <p class="auth-link">
+      New user? <a th:href="@{/signup}">Create an account</a>
+    </p>
+  </main>
+</body>
+</html>

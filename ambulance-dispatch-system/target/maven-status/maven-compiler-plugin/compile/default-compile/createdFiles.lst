@@ -1,4 +1,5 @@
 com\example\ambulancedispatch\controller\AmbulanceController.class
+com\example\ambulancedispatch\controller\AuthController.class
 com\example\ambulancedispatch\model\EmergencyRequest.class
 com\example\ambulancedispatch\controller\DispatchController.class
 com\example\ambulancedispatch\model\Ambulance.class
@@ -6,6 +7,7 @@ com\example\ambulancedispatch\controller\HospitalController.class
 com\example\ambulancedispatch\service\HospitalService.class
 com\example\ambulancedispatch\service\Dijkstra$Result.class
 com\example\ambulancedispatch\controller\HomeController.class
+com\example\ambulancedispatch\config\AuthInterceptor.class
 com\example\ambulancedispatch\controller\EmergencyController.class
 com\example\ambulancedispatch\controller\NotificationController.class
 com\example\ambulancedispatch\service\AmbulanceService.class
@@ -23,6 +25,7 @@ com\example\ambulancedispatch\controller\WebController.class
 com\example\ambulancedispatch\model\DispatchHistory.class
 com\example\ambulancedispatch\service\NotificationService.class
 com\example\ambulancedispatch\service\Dijkstra.class
+com\example\ambulancedispatch\config\WebConfig.class
 com\example\ambulancedispatch\repository\NotificationRepository.class
 com\example\ambulancedispatch\repository\DispatchHistoryRepository.class
 com\example\ambulancedispatch\model\Hospital.class
